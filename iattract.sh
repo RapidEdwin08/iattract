@@ -17,7 +17,7 @@ echo '
              |_______________|         |______________|                      
 '
 )
-# Function to check if attractmode Installed
+# Function to check if gamelist.xml exists and if attractmode Installed
 checkATTRACTromlist() {
 # Check if NO Files/Folders
 if [ "$(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename 2>/dev/null )" == '' ]; then
@@ -125,7 +125,6 @@ FILE=$(dialog --title " SELECT Folder to Create attractmode [romlist.txt] from [
 tput reset
 if [ ! "$FILE" == '' ]; then
 	selectFILE=$(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename 2>/dev/null | sed -n "`echo "$FILE p" | sed 's/ //'`")
-	# Change to Sub-Directory IF NOT a FILE
 	if [ -d "$ROMdir/$selectFILE" ]; then
 		GLselectSUBmenu=$(dialog --no-collapse --title "              ? ARE YOU SURE ?             " \
 		--ok-label OK --cancel-label BACK \
