@@ -22,7 +22,7 @@ checkATTRACTromlist() {
 # Check if NO Files/Folders
 if [ "$(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename 2>/dev/null )" == '' ]; then
 	dialog --no-collapse --title " Found {0} Folders in [$ROMdir] with a [gamelist.xml]" --ok-label CONTINUE --msgbox "$ROMdir [Avail $(df -h $ROMdir |awk '{print $4}' | grep -v Avail )]"  25 75
-	GLattractMAIN
+	GLattractMENU
 fi
 # Check if attract/romlist/ Folder Exists
 if [[ ! -d /opt/retropie/configs/all/attract/romlist ]]; then
