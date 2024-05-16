@@ -27,7 +27,7 @@ fi
 # Check if attract/romlist/ Folder Exists
 if [[ ! -d /opt/retropie/configs/all/attract/romlist ]]; then
 	dialog --no-collapse --title " /opt/retropie/configs/all/attract/romlist NOT FOUND! " --ok-label CONTINUE --msgbox "Are You Sure [attractmode] is Installed?"  25 75
-	GLrefreshMENU
+	GLattractMENU
 fi
 }
 
@@ -75,7 +75,7 @@ scan_and_process_game_folder() {
     echo "All folders processed."
 }
 
-GLrefreshMENU()
+GLattractMENU()
 {
 tput reset
 ROMdirCOUNT=$(( $(ls -1 $ROMdir | awk 'NR>2' | wc -l) ))
@@ -102,9 +102,9 @@ if [ "$GLattractMAIN" == '2' ]; then
 			convert_xml_to_text "$ROMdir/$i/gamelist.xml" "/opt/retropie/configs/all/attract/romlist/"
 		done
 		dialog --no-collapse --title "SCAN COMPLETE!  [/opt/retropie/configs/all/attract/romlist]:        " --ok-label CONTINUE --msgbox "$(ls /opt/retropie/configs/all/attract/romlist/ 2>/dev/null | xargs -n 1 basename 2>/dev/null) "  25 75
-		GLrefreshMENU
+		GLattractMENU
 	fi
-GLrefreshMENU
+GLattractMENU
 fi
 tput reset
 exit 0
@@ -134,6 +134,7 @@ if [ ! "$FILE" == '' ]; then
 		B "BACK  " 2>&1>/dev/tty)
 		if [ "$GLselectSUBmenu" == 'B' ] || [ "$GLselectSUBmenu" == '' ]; then GLselectMENU; fi		
 		if [ "$GLselectSUBmenu" == '1' ]; then
+			tput reset
 			echo Scanning "$selectFILE/gamelist.xml"
 			convert_xml_to_text "$ROMdir/$selectFILE/gamelist.xml" "/opt/retropie/configs/all/attract/romlist/"
 			dialog --no-collapse --title "Create attractmode [romlist.txt] from [$selectFILE/gamelist.xml] COMPLETE!  " --ok-label CONTINUE --msgbox "[/opt/retropie/configs/all/attract/romlist/$selectFILE.txt]"  25 75
@@ -142,9 +143,9 @@ if [ ! "$FILE" == '' ]; then
 		GLselectMENU
 	fi
 fi
-GLrefreshMENU
+GLattractMENU
 }
 
-GLrefreshMENU
+GLattractMENU
 tput reset
 exit 0
