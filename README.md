@@ -4,6 +4,8 @@
 Menu driven script to convert ES [gamelist.xml] to attractmode [romlist.txt]  
 A group effort by SupremeTeam  
 
+NOTE: Script will Overwrite any/all pre-existing [romlist.txt]  
+
 ## INSTALLATION  
 
 ```bash
