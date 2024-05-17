@@ -14,7 +14,7 @@ If you want 1-Run-N-Done:
 curl -sSL https://raw.githubusercontent.com/RapidEdwin08/iattract/main/iattract.sh  | bash  
 ```
 
-If you want to Put the Install Script in the retropiemenu [+Icon]:  
+If you want to Put the Script in the retropiemenu [+Icon]:  
 ```bash
 wget https://raw.githubusercontent.com/RapidEdwin08/iattract/main/iattract.sh -P ~/RetroPie/retropiemenu
 wget https://raw.githubusercontent.com/RapidEdwin08/iattract/main/iattract.png -P ~/RetroPie/retropiemenu/icons
