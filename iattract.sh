@@ -48,7 +48,7 @@ convert_xml_to_text() {
 			# Output the whole line
 			echo "$line" >> $tmpFILE
 		fi
-		done < "$xml_file"
+	done < "$xml_file"
  
     # Remove any file extension from the folder name
     folder_name=${folder_name%.*}
@@ -64,8 +64,8 @@ convert_xml_to_text() {
                    -v "concat(substring(path,3),';',name,';${folder_name};;', \
                    (substring(releasedate,1,4)),';',developer,';',genre,';',players,';;;;;;;;;;;;;;;;;;')" \
                    -n "$tmpFILE" | while read -r line; do
-        # Remove leading './' and file extension to obtain Only the path - Obtain the rest after
-        linePATH=$(echo "$line" | sed 's/^\.\/\(.*\)\..*$/\1/' | cut -f 1 -d '.')
+        # Parse Only the File name from path # Remove leading './' | Remove everything after ; | Remove everything after Last instance of . | Remove the last character . # Obtain the REST after
+        linePATH=$(echo "$line" | sed 's/^\.\/\(.*\)\..*$/\1/' | cut -f 1 -d ';' | sed 's+[^.]*$++' | sed 's+.$++')
         lineREST=$(echo "$line" | sed 's/^[^;]*;//' | rev | cut -f 1 -d '.' | rev)
         echo "$linePATH;$lineREST" >> "$output_file"
     done
