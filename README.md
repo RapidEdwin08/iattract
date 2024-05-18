@@ -40,6 +40,6 @@ If you want to GIT it All:
 cd ~
 git clone --depth 1 https://github.com/RapidEdwin08/iattract.git
 chmod 755 ~/iattract/iattract.sh
-cd ~/iattract && ./iattract.sh
+cd ~/iattract && ./iattract.sh && cd ~
 
 ```
