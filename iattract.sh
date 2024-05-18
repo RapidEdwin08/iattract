@@ -25,7 +25,7 @@ if [ "$(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -
 	GLattractMENU
 fi
 # Check if attract/romlist/ Folder Exists
-if [[ ! -d /opt/retropie/configs/all/attract/romlist ]]; then
+if [[ ! -d /opt/retropie/configs/all/attract/romlists ]]; then
 	dialog --no-collapse --title " [/opt/retropie/configs/all/attract/romlist] NOT FOUND! " --ok-label CONTINUE --msgbox "Are You Sure [attractmode] is Installed?"  25 75
 	GLattractMENU
 fi
