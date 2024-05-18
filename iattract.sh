@@ -37,6 +37,18 @@ convert_xml_to_text() {
     local xml_file="$1"
     local output_dir="$2"
     local folder_name=$(basename "$(dirname "$xml_file")")
+
+	local tmpFILE=/dev/shm/tmp.xml
+	rm $tmpFILE > /dev/null 2>&1
+	while read -r line; do
+		# Replace New Lines with Space If line does NOT end in >
+		if [[ ! "$(echo ${line:(-1)})" == '>' ]] then
+			echo $line | tr '\n' ' ' >> $tmpFILE
+		else
+			# Output the whole line
+			echo "$line" >> $tmpFILE
+		fi
+		done < "$xml_file"
  
     # Remove any file extension from the folder name
     folder_name=${folder_name%.*}
@@ -51,31 +63,15 @@ convert_xml_to_text() {
     xmlstarlet sel -t -m '//game' \
                    -v "concat(substring(path,3),';',name,';${folder_name};;', \
                    (substring(releasedate,1,4)),';',developer,';',genre,';',players,';;;;;;;;;;;;;;;;;;')" \
-                   -n "$xml_file" | while read -r line; do
+                   -n "$tmpFILE" | while read -r line; do
         # Remove leading './' and file extension to obtain Only the path - Obtain the rest after
         linePATH=$(echo "$line" | sed 's/^\.\/\(.*\)\..*$/\1/' | cut -f 1 -d '.')
         lineREST=$(echo "$line" | sed 's/^[^;]*;//' | rev | cut -f 1 -d '.' | rev)
         echo "$linePATH;$lineREST" >> "$output_file"
     done
+	rm $tmpFILE > /dev/null 2>&1
 }
  
-# Function to scan a directory for gamelist.xml and process it - SupremeTeam
-scan_and_process_game_folder() {
-    local roms_dir="$1"
-    local romlist_dir="$2"
-    echo "Scanning directory for game folders: $roms_dir"
-    find "$roms_dir" -mindepth 1 -maxdepth 1 -type d -print0 | while IFS= read -r -d '' folder; do
-        local xml_file="${folder}/gamelist.xml"
-        if [[ -f "$xml_file" ]]; then
-            echo "Found XML file in folder: $folder"
-            convert_xml_to_text "$xml_file" "$romlist_dir"
-        else
-            echo "No gamelist.xml found in folder: $folder"
-        fi
-    done
-    echo "All folders processed."
-}
-
 GLattractMENU()
 {
 tput reset
