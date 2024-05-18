@@ -99,9 +99,9 @@ if [ "$GLattractMAIN" == '2' ]; then
 		tput reset
 		for i in $(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename 2>/dev/null); do
 			echo Scanning "$ROMdir/$i"
-			convert_xml_to_text "$ROMdir/$i/gamelist.xml" "/opt/retropie/configs/all/attract/romlist/"
+			convert_xml_to_text "$ROMdir/$i/gamelist.xml" "/opt/retropie/configs/all/attractmode/romlists/"
 		done
-		dialog --no-collapse --title "SCAN COMPLETE!  [/opt/retropie/configs/all/attract/romlist]:        " --ok-label CONTINUE --msgbox "$(ls /opt/retropie/configs/all/attract/romlist/ 2>/dev/null | xargs -n 1 basename 2>/dev/null) "  25 75
+		dialog --no-collapse --title "SCAN COMPLETE!  [/opt/retropie/configs/all/attractmode/romlists]:        " --ok-label CONTINUE --msgbox "$(ls /opt/retropie/configs/all/attractmode/romlists/ 2>/dev/null | xargs -n 1 basename 2>/dev/null) "  25 75
 		GLattractMENU
 	fi
 GLattractMENU
@@ -136,7 +136,7 @@ if [ ! "$FILE" == '' ]; then
 			tput reset
 			echo Scanning "$selectFILE/gamelist.xml"
 			convert_xml_to_text "$ROMdir/$selectFILE/gamelist.xml" "/opt/retropie/configs/all/attract/romlist/"
-			dialog --no-collapse --title "Create attractmode [romlist.txt] from [$selectFILE/gamelist.xml] COMPLETE!  " --ok-label CONTINUE --msgbox "[/opt/retropie/configs/all/attract/romlist/$selectFILE.txt]"  25 75
+			dialog --no-collapse --title "Create attractmode [romlist.txt] from [$selectFILE/gamelist.xml] COMPLETE!  " --ok-label CONTINUE --msgbox "[/opt/retropie/configs/all/attractmode/romlists/$selectFILE.txt]"  25 75
 			GLselectMENU
 		fi
 		GLselectMENU
