@@ -2,7 +2,10 @@
 ![iattract.png](https://raw.githubusercontent.com/RapidEdwin08/iattract/main/iattract.png )
 
 Menu driven script to convert ES [gamelist.xml] to attractmode [romlist.txt]  
-A group effort by SupremeTeam  
+A group effort with SupremeTeam  
+
+Script will scan $HOME/RetroPie/roms/* for [gamelist.xml]  
+Script currently does NOT scan /opt/retropie/configs/all/emulationstation/gamelists  
 
 NOTE: Script will Overwrite any/all pre-existing attractmode [romlist.txt]  
 
