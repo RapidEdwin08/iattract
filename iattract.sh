@@ -102,7 +102,7 @@ if [ "$GLattractMAIN" == '2' ]; then
 			echo Scanning "$ROMdir/$i"
 			convert_xml_to_text "$ROMdir/$i/gamelist.xml" "$attractLISTdir"
 		done
-		lsROMlist=$(find $attractLISTdir -type f -printf "%f\n" | sort -n)
+		lsROMlist=$(find $attractLISTdir -type f -printf "%f\n" | sort)
 		dialog --no-collapse --title "SCAN COMPLETE!  [$attractLISTdir]:        " --ok-label CONTINUE --msgbox "$lsROMlist "  25 75
 		GLattractMENU
 	fi
