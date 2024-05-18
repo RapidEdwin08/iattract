@@ -2,6 +2,7 @@
 # https://github.com/RapidEdwin08/iattract
 
 ROMdir=~/RetroPie/roms
+attractLISTdir=/opt/retropie/configs/all/attractmode/romlists
 
 GLattractLOGO=$(
 echo '
@@ -25,8 +26,8 @@ if [ "$(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -
 	GLattractMENU
 fi
 # Check if attract/romlist/ Folder Exists
-if [[ ! -d /opt/retropie/configs/all/attractmode/romlists ]]; then
-	dialog --no-collapse --title " [/opt/retropie/configs/all/attractmode/romlists] NOT FOUND! " --ok-label CONTINUE --msgbox "Are You Sure [attractmode] is Installed?"  25 75
+if [[ ! -d $attractLISTdir ]]; then
+	dialog --no-collapse --title " [$attractLISTdir] NOT FOUND! " --ok-label CONTINUE --msgbox "Are You Sure [attractmode] is Installed?"  25 75
 	GLattractMENU
 fi
 }
@@ -99,10 +100,10 @@ if [ "$GLattractMAIN" == '2' ]; then
 		tput reset
 		for i in $(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename 2>/dev/null); do
 			echo Scanning "$ROMdir/$i"
-			convert_xml_to_text "$ROMdir/$i/gamelist.xml" "/opt/retropie/configs/all/attractmode/romlists"
+			convert_xml_to_text "$ROMdir/$i/gamelist.xml" "$attractLISTdir"
 		done
-		lsROMlist=$(find /opt/retropie/configs/all/attractmode/romlists/ -type f -printf "%f\n" | sort -n)
-		dialog --no-collapse --title "SCAN COMPLETE!  [/opt/retropie/configs/all/attractmode/romlists]:        " --ok-label CONTINUE --msgbox "$lsROMlist "  25 75
+		lsROMlist=$(find $attractLISTdir -type f -printf "%f\n" | sort -n)
+		dialog --no-collapse --title "SCAN COMPLETE!  [$attractLISTdir]:        " --ok-label CONTINUE --msgbox "$lsROMlist "  25 75
 		GLattractMENU
 	fi
 GLattractMENU
@@ -136,8 +137,8 @@ if [ ! "$FILE" == '' ]; then
 		if [ "$GLselectSUBmenu" == '1' ]; then
 			tput reset
 			echo Scanning "$selectFILE/gamelist.xml"
-			convert_xml_to_text "$ROMdir/$selectFILE/gamelist.xml" "/opt/retropie/configs/all/attractmode/romlists"
-			dialog --no-collapse --title "Create attractmode [romlist.txt] from [$selectFILE/gamelist.xml] COMPLETE!  " --ok-label CONTINUE --msgbox "[/opt/retropie/configs/all/attractmode/romlists/$selectFILE.txt]"  25 75
+			convert_xml_to_text "$ROMdir/$selectFILE/gamelist.xml" "$attractLISTdir"
+			dialog --no-collapse --title "Create attractmode [romlist.txt] from [$selectFILE/gamelist.xml] COMPLETE!  " --ok-label CONTINUE --msgbox "[$attractLISTdir/$selectFILE.txt]"  25 75
 			GLselectMENU
 		fi
 		GLselectMENU
