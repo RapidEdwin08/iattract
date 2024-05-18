@@ -65,8 +65,8 @@ convert_xml_to_text() {
                    (substring(releasedate,1,4)),';',developer,';',genre,';',players,';;;;;;;;;;;;;;;;;;')" \
                    -n "$tmpFILE" | while read -r line; do
         # Parse Only the File name from path # Remove leading './' | Remove everything after First Instance of ; | Remove everything after Last instance of . | Remove the last character . # Obtain the REST after
-        linePATH=$(echo "$line" | sed 's/^\.\/\(.*\)\..*$/\1/' | sed 's/;*$//' | sed 's+[^.]*$++' | sed 's+.$++')
-        lineREST=$(echo "$line" | sed 's/^[^;]*;//' | rev | cut -f 1 -d '.' | rev)
+        linePATH=$(echo "$line" | sed 's/^\.\/\(.*\)\..*$/\1/' | cut -f 1 -d ';' | sed 's+[^.]*$++' | sed 's+.$++')
+		lineREST=$(echo "$line" | rev | sed 's+[^;]*$++' | sed 's+.$++' | rev)
         echo "$linePATH;$lineREST" >> "$output_file"
     done
 	rm $tmpFILE > /dev/null 2>&1
