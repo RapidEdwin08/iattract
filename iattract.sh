@@ -77,7 +77,7 @@ convert_xml_to_text() {
 GLattractMENU()
 {
 tput reset
-ROMdirCOUNT=$(( $(ls -1 $ROMdir | awk 'NR>2' | wc -l) ))
+ROMdirCOUNT=$(( $(find $ROMdir -maxdepth 1 -type d | tail -n +2 | grep -v 'music' | grep -v 'videos' | wc -l) ))
 currentROMglCOUNT=$(( $(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename 2>/dev/null | wc -l) ))
 GLattractMAIN=$(dialog --no-collapse --title " Create attractmode [romlist.txt] from [gamelist.xml]" \
 	--ok-label OK --cancel-label EXIT \
