@@ -18,16 +18,18 @@ echo '
              |_______________|         |______________|                      
 '
 )
-# Function to check if gamelist.xml exists and if attractmode Installed
+# Function to check if attractmode Installed
 checkATTRACTromlist() {
-# Check if NO Files/Folders
-if [ "$(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename 2>/dev/null )" == '' ]; then
-	dialog --no-collapse --title " Found {0} Folders in [$ROMdir] with a [gamelist.xml]" --ok-label CONTINUE --msgbox "$ROMdir [Avail $(df -h $ROMdir |awk '{print $4}' | grep -v Avail )]"  25 75
-	GLattractMENU
-fi
-# Check if attract/romlist/ Folder Exists
 if [[ ! -d $attractLISTdir ]]; then
 	dialog --no-collapse --title " [$attractLISTdir] NOT FOUND! " --ok-label CONTINUE --msgbox "Are You Sure [attractmode] is Installed?"  25 75
+	GLattractMENU
+fi
+}
+
+# Function to check if gamelist.xml exists
+checkROMgl() {
+if [ "$(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename 2>/dev/null )" == '' ]; then
+	dialog --no-collapse --title " Found {0} Folders in [$ROMdir] with a [gamelist.xml]" --ok-label CONTINUE --msgbox "$ROMdir [Avail $(df -h $ROMdir |awk '{print $4}' | grep -v Avail )]"  25 75
 	GLattractMENU
 fi
 }
@@ -82,11 +84,15 @@ GLattractMAIN=$(dialog --no-collapse --title " Create attractmode [romlist.txt] 
 	--menu "{$currentROMglCOUNT} of {$ROMdirCOUNT} Folders in [$ROMdir] with a gamelist.xml $GLattractLOGO" 25 75 20 \
 	1 " SELECT A [gamelist.xml] from [$ROMdir] " \
 	2 " SCAN ALL [gamelist.xml] from [$ROMdir]  " \
+	3 " SELECT A [ROM] Folder  with [attract --build-romlist] " \
+	4 " SCAN ALL [ROM] Folders with [attract --build-romlist] " \
 	X " EXIT  " 2>&1>/dev/tty)
 if [ "$GLattractMAIN" == 'X' ] || [ "$GLattractMAIN" == '' ]; then tput reset; exit 0; fi
 checkATTRACTromlist
-if [ "$GLattractMAIN" == '1' ]; then GLselectMENU; fi
+if [ "$GLattractMAIN" == '1' ]; then checkROMgl; GLselectMENU; fi
+if [ "$GLattractMAIN" == '3' ]; then GLselectMENUattract; fi
 if [ "$GLattractMAIN" == '2' ]; then
+	checkROMgl
 	confSCANall=$(dialog --no-collapse --title " SCAN ALL ROM Folders for [gamelist.xml] " \
 		--ok-label OK --cancel-label BACK \
 		--menu "                          ? ARE YOU SURE ?             \n{$currentROMglCOUNT} of {$ROMdirCOUNT} Folders in [$ROMdir] with a gamelist.xml" 25 75 20 \
@@ -94,9 +100,26 @@ if [ "$GLattractMAIN" == '2' ]; then
 		2 " BACK " 2>&1>/dev/tty)
 	if [ "$confSCANall" == '1' ]; then
 		tput reset
-		for i in $(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename 2>/dev/null); do
+		for i in $(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename | grep -v 'music' | grep -v 'videos' 2>/dev/null); do
 			echo Scanning "$ROMdir/$i"
 			convert_xml_to_text "$ROMdir/$i/gamelist.xml" "$attractLISTdir"
+		done
+		lsROMlist=$(find $attractLISTdir -type f -printf "%f\n" | sort)
+		dialog --no-collapse --title "SCAN COMPLETE!  [$attractLISTdir]:        " --ok-label CONTINUE --msgbox "$lsROMlist "  25 75
+		GLattractMENU
+	fi
+GLattractMENU
+fi
+if [ "$GLattractMAIN" == '4' ]; then
+	confSCANall=$(dialog --no-collapse --title " SCAN ALL [ROM] Folders with [attract --build-romlist] " \
+		--ok-label OK --cancel-label BACK \
+		--menu "                          ? ARE YOU SURE ?             \n{$(find $ROMdir -maxdepth 1 -type d | tail -n +2 | grep -v '/music' | grep -v '/videos' | wc -l)} ROM Folders Found in [$ROMdir]" 25 75 20 \
+		1 " SCAN ALL [ROM] Folders with [attract --build-romlist] " \
+		2 " BACK " 2>&1>/dev/tty)
+	if [ "$confSCANall" == '1' ]; then
+		tput reset
+		for i in $(find $ROMdir -maxdepth 1 -type d | xargs -n 1 basename | tail -n +2 | grep -v 'music' | grep -v 'videos' | sort 2>/dev/null); do
+			if [[ ! "$(ls -1 $ROMdir/$i)" == '' ]]; then attract --build-romlist "$i" -o "$i" 2>/dev/null; fi
 		done
 		lsROMlist=$(find $attractLISTdir -type f -printf "%f\n" | sort)
 		dialog --no-collapse --title "SCAN COMPLETE!  [$attractLISTdir]:        " --ok-label CONTINUE --msgbox "$lsROMlist "  25 75
@@ -112,17 +135,17 @@ GLselectMENU()
 {
 tput reset
 checkATTRACTromlist
-currentROMglCOUNT=$(( $(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename 2>/dev/null | wc -l) ))
+currentROMglCOUNT=$(( $(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename | grep -v 'music' | grep -v 'videos' 2>/dev/null | wc -l) ))
 let i=0 # define counting variable
 W=() # define working array
 while read -r line; do # process file by file
     let i=$i+1
     W+=($i "$line")
-done < <( ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename 2>/dev/null )
+done < <( ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename | grep -v 'music' | grep -v 'videos' 2>/dev/null )
 FILE=$(dialog --title " SELECT Folder to Create attractmode [romlist.txt] from [gamelist.xml]" --ok-label " SELECT " --cancel-label BACK --menu "{$currentROMglCOUNT} of {$ROMdirCOUNT} Folders in [$ROMdir] with a gamelist.xml" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
 tput reset
 if [ ! "$FILE" == '' ]; then
-	selectFILE=$(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename 2>/dev/null | sed -n "`echo "$FILE p" | sed 's/ //'`")
+	selectFILE=$(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename | grep -v 'music' | grep -v 'videos' 2>/dev/null | sed -n "`echo "$FILE p" | sed 's/ //'`")
 	if [ -d "$ROMdir/$selectFILE" ]; then
 		GLselectSUBmenu=$(dialog --no-collapse --title "              ? ARE YOU SURE ?             " \
 		--ok-label OK --cancel-label BACK \
@@ -138,6 +161,39 @@ if [ ! "$FILE" == '' ]; then
 			GLselectMENU
 		fi
 		GLselectMENU
+	fi
+fi
+GLattractMENU
+}
+
+GLselectMENUattract()
+{
+tput reset
+checkATTRACTromlist
+let i=0 # define counting variable
+W=() # define working array
+while read -r line; do # process file by file
+    let i=$i+1
+    W+=($i "$line")
+done < <( find $ROMdir -maxdepth 1 -type d | xargs -n 1 basename | tail -n +2 | grep -v 'music' | grep -v 'videos' | sort 2>/dev/null )
+FILE=$(dialog --title " SELECT A [ROM] Folder" --ok-label " SELECT " --cancel-label BACK --menu " Choose a [ROM] Folder to Scan with [attract --build-romlist]" 25 75 20 "${W[@]}" 3>&2 2>&1 1>&3  </dev/tty > /dev/tty) # show dialog and store output
+tput reset
+if [ ! "$FILE" == '' ]; then
+	selectFILE=$(find $ROMdir -maxdepth 1 -type d | xargs -n 1 basename | tail -n +2 | grep -v 'music' | grep -v 'videos' | sort 2>/dev/null | sed -n "`echo "$FILE p" | sed 's/ //'`")
+	if [ -d "$ROMdir/$selectFILE" ]; then
+		GLselectSUBmenu=$(dialog --no-collapse --title "              ? ARE YOU SURE ?             " \
+		--ok-label OK --cancel-label BACK \
+		--menu " Current Selection: [$ROMdir/$selectFILE] " 25 75 20 \
+		1 "SCAN [$selectFILE] with [attract --build-romlist]" \
+		B "BACK  " 2>&1>/dev/tty)
+		if [ "$GLselectSUBmenu" == 'B' ] || [ "$GLselectSUBmenu" == '' ]; then GLselectMENUattract; fi		
+		if [ "$GLselectSUBmenu" == '1' ]; then
+			tput reset
+			attract --build-romlist "$selectFILE" -o "$selectFILE"
+			dialog --no-collapse --title "Create attractmode [romlist.txt] from [$selectFILE] COMPLETE!  " --ok-label CONTINUE --msgbox "$logVAR [$attractLISTdir/$selectFILE.txt]"  25 75
+			GLselectMENUattract
+		fi
+		GLselectMENUattract
 	fi
 fi
 GLattractMENU
