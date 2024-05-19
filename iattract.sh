@@ -155,7 +155,7 @@ if [ ! "$FILE" == '' ]; then
 		if [ "$GLselectSUBmenu" == 'B' ] || [ "$GLselectSUBmenu" == '' ]; then GLselectMENU; fi		
 		if [ "$GLselectSUBmenu" == '1' ]; then
 			tput reset
-			echo Scanning "$selectFILE/gamelist.xml"
+			echo Scanning "$ROMdir/$selectFILE/gamelist.xml"
 			convert_xml_to_text "$ROMdir/$selectFILE/gamelist.xml" "$attractLISTdir"
 			dialog --no-collapse --title "Create attractmode [romlist.txt] from [$selectFILE/gamelist.xml] COMPLETE!  " --ok-label CONTINUE --msgbox "[$attractLISTdir/$selectFILE.txt]"  25 75
 			GLselectMENU
