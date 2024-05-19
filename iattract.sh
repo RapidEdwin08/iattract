@@ -101,7 +101,7 @@ if [ "$GLattractMAIN" == '2' ]; then
 	if [ "$confSCANall" == '1' ]; then
 		tput reset
 		for i in $(ls $ROMdir/*/gamelist.xml 2>/dev/null | rev | cut -c 14- | rev | xargs -n 1 basename | grep -v 'music' | grep -v 'videos' 2>/dev/null); do
-			echo Scanning "$ROMdir/$i"
+			echo Scanning "$ROMdir/$i/gamelist.xml"
 			convert_xml_to_text "$ROMdir/$i/gamelist.xml" "$attractLISTdir"
 		done
 		lsROMlist=$(find $attractLISTdir -type f -printf "%f\n" | sort)
